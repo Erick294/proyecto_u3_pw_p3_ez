@@ -6,6 +6,7 @@ import com.uce.edu.pw.modelo.Estudiante;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -38,6 +39,22 @@ public class EstudianteRepositoryImpl implements IEstudianteRepository{
     public void eliminar(Integer id) {
         // TODO Auto-generated method stub
         this.entityManager.remove(this.buscar(id));
+    }
+
+    @Override
+    public Estudiante buscarNombre(String nombre) {
+        // TODO Auto-generated method stub
+        TypedQuery<Estudiante> myQuery = this.entityManager.createQuery("SELECT e FROM Estudiante e WHERE e.nombre > :nombre", Estudiante.class);
+		myQuery.setParameter("nombre", nombre);
+		return myQuery.getSingleResult();
+    }
+
+    @Override
+    public Estudiante buscarApellido(String apellido) {
+        // TODO Auto-generated method stub
+        TypedQuery<Estudiante> myQuery = this.entityManager.createQuery("SELECT e FROM Estudiante e WHERE e.apellido > :apellido", Estudiante.class);
+		myQuery.setParameter("apellido", apellido);
+		return myQuery.getSingleResult();
     }
     
 }

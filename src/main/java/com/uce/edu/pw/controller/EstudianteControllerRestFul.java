@@ -30,6 +30,16 @@ public class EstudianteControllerRestFul {
         return this.estudianteService.encontrar(id);
     }
 
+    @GetMapping(path = "/buscar/{nombre}")
+    public Estudiante encontrarNombre(@PathVariable("nombre") String nombre) {
+        return this.estudianteService.encontrarApellido(nombre);
+    }
+
+    @GetMapping(path = "/buscar/{apellido}")
+    public Estudiante encontrarApellido(@PathVariable("apellido") String apellido) {
+        return this.estudianteService.encontrarApellido(apellido);
+    }
+
     public void borrar(Integer id) {
           
     }
