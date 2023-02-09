@@ -33,12 +33,12 @@ public class ProfesorControllerRestFul {
         return this.profesorService.encontrar(id);
     }
 
-    @GetMapping(path = "/buscar/{nombre}")
+    @GetMapping(path = "/nombre/{nombre}")
     public Profesor encontrarNombre(@PathVariable("nombre") String nombre) {
         return this.profesorService.encontrarNombre(nombre);
     }
 
-    @GetMapping(path = "/buscar/cedula/{cedula}")
+    @GetMapping(path = "/cedula/{cedula}")
     public Profesor encontrarCedula(@PathVariable("cedula") String cedula) {
         return this.profesorService.encontrarCedula(cedula);
     }

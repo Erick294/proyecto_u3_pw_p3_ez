@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.example.demo.repository.modelo.Estudiante;
 
 public interface IEstudianteService {
@@ -7,6 +10,8 @@ public interface IEstudianteService {
     public void registrar(Estudiante estudiante);
     public void actualizar(Estudiante estudiante);
     public Estudiante encontrar(Integer id);
+    public List<Estudiante> encontrarTodos();
+    public List<Estudiante> encontrarTodosSalario(BigDecimal salario);
     public Estudiante encontrarNombre(String nombre);
     public Estudiante encontrarApellido(String apellido);
     public void borrar(Integer id);
