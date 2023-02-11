@@ -6,8 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.example.demo.repository.modelo.Estudiante;
 import com.example.demo.service.IEstudianteService;
 
 @RestController
+@CrossOrigin()
 @RequestMapping("/estudiantes")
 public class EstudianteControllerRestFul{
 
@@ -34,14 +36,16 @@ public class EstudianteControllerRestFul{
       this.estudianteService.registrar(estudiante);
     }
 
-    @PutMapping(path = "/{id}")
-    public void actualizar(@PathVariable("id") Integer id, @RequestBody Estudiante estudiante, @RequestParam String provincia) {
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Estudiante> actualizar(@PathVariable("id") Integer id, @RequestBody Estudiante estudiante, @RequestParam String provincia) {
         estudiante.setId(id);
         System.out.println("Actualizado Correctamente " +provincia);
         this.estudianteService.actualizar(estudiante);
+        Estudiante est = this.estudianteService.encontrar(id);
+        return ResponseEntity.status(HttpStatus.OK).body(est);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Estudiante> encontrar(@PathVariable("id") Integer id) {
         Estudiante est = this.estudianteService.encontrar(id);
         int codigo = 0;
