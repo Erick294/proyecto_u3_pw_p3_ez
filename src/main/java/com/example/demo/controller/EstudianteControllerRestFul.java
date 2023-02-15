@@ -30,7 +30,7 @@ public class EstudianteControllerRestFul{
     @Autowired
     private IEstudianteService estudianteService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void registrar(@RequestBody Estudiante estudiante) {
         System.out.println("Ingresado Correctamente");
       this.estudianteService.registrar(estudiante);
