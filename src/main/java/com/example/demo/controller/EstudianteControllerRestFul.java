@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.repository.modelo.Estudiante;
 import com.example.demo.service.IEstudianteService;
+import com.example.demo.service.to.EstudianteTo;
+import com.example.demo.service.to.MateriaTo;
 
 @RestController
 @CrossOrigin()
@@ -54,13 +59,31 @@ public class EstudianteControllerRestFul{
         
     }
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<List<Estudiante>> encontrarTodos() {
         HttpHeaders cabeceras = new HttpHeaders();
         cabeceras.add("detalleMensaje", "Estudiantes encontrados");
         cabeceras.add("valorCalculado", "12000000");
         List<Estudiante> lista = this.estudianteService.encontrarTodos();
         return new ResponseEntity<>(lista, cabeceras, 230);
+    }*/
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EstudianteTo>> encontrarTodosHateoas() {
+        List<EstudianteTo> lista = this.estudianteService.encontrarTodosTo();
+
+        for(EstudianteTo estu : lista){
+            Link myLink = linkTo(methodOn(this.getClass()).buscarMaterias(estu.getId())).withRel("materias");
+            estu.add(myLink);
+        }
+
+        return new ResponseEntity<>(lista, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{id}/materias", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MateriaTo> buscarMaterias(@PathVariable("id") Integer id){
+        List<MateriaTo> list = null;
+        return list;
     }
 
     @GetMapping(path = "/salario")

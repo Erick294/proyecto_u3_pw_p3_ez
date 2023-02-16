@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.IEstudianteRepository;
 import com.example.demo.repository.modelo.Estudiante;
+import com.example.demo.service.to.EstudianteTo;
 
 @Service
 public class EstudianteServiceImpl implements IEstudianteService{
@@ -62,6 +64,22 @@ public class EstudianteServiceImpl implements IEstudianteService{
         return this.estudianteRepository.buscarTodosSalario(salario);
     }
 
-    
-    
+    @Override
+    public List<EstudianteTo> encontrarTodosTo() {
+        // TODO Auto-generated method stub
+        List<Estudiante> lista = this.estudianteRepository.buscarTodos();
+        List<EstudianteTo> listaTo = lista.stream().map(estudiante -> 
+                                                            this.convertir(estudiante)).collect(Collectors.toList());
+        return listaTo;
+    }
+
+    private EstudianteTo convertir(Estudiante est){
+        EstudianteTo estu = new EstudianteTo();
+        estu.setId(est.getId());
+        estu.setApellido(est.getApellido());
+        estu.setFechaNacimiento(est.getFechaNacimiento());
+        estu.setNombre(est.getNombre());
+        return estu;
+    }
+  
 }
