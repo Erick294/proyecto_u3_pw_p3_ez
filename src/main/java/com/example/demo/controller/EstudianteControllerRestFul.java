@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.repository.modelo.Estudiante;
 import com.example.demo.service.IEstudianteService;
+import com.example.demo.service.IMateriaService;
+import com.example.demo.service.to.EstudianteNuevoTo;
 import com.example.demo.service.to.EstudianteTo;
 import com.example.demo.service.to.MateriaTo;
 
@@ -34,6 +36,9 @@ public class EstudianteControllerRestFul{
 
     @Autowired
     private IEstudianteService estudianteService;
+
+    @Autowired
+    private IMateriaService materiaService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void registrar(@RequestBody Estudiante estudiante) {
@@ -46,13 +51,13 @@ public class EstudianteControllerRestFul{
         estudiante.setId(id);
         System.out.println("Actualizado Correctamente " +provincia);
         this.estudianteService.actualizar(estudiante);
-        Estudiante est = this.estudianteService.encontrar(id);
-        return ResponseEntity.status(HttpStatus.OK).body(est);
+        //Estudiante est = this.estudianteService.encontrar(id);
+        return null; //ResponseEntity.status(HttpStatus.OK).body(est);
     }
 
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<Estudiante> encontrar(@PathVariable("id") Integer id) {
-        Estudiante est = this.estudianteService.encontrar(id);
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EstudianteNuevoTo> encontrar(@PathVariable("id") Integer id) {
+        EstudianteNuevoTo est = this.estudianteService.encontrar(id);
         int codigo = 0;
         codigo = 230;
         return ResponseEntity.status(codigo).body(est);
@@ -75,6 +80,13 @@ public class EstudianteControllerRestFul{
         for(EstudianteTo estu : lista){
             Link myLink = linkTo(methodOn(this.getClass()).buscarMaterias(estu.getId())).withRel("materias");
             estu.add(myLink);
+
+            Link myLink2 = linkTo(methodOn(this.getClass()).encontrar(estu.getId())).withSelfRel();
+            estu.add(myLink2);
+
+            Link myLink3 = linkTo(this.getClass()).slash("prueba").slash("estudiantes").
+                                                                    slash(estu.getId()).slash("final").withRel("Prueba");
+            estu.add(myLink3);
         }
 
         return new ResponseEntity<>(lista, HttpStatus.OK);
@@ -82,7 +94,12 @@ public class EstudianteControllerRestFul{
 
     @GetMapping(path = "/{id}/materias", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MateriaTo> buscarMaterias(@PathVariable("id") Integer id){
-        List<MateriaTo> list = null;
+        List<MateriaTo> list = this.materiaService.encontrarTodosTo(id);
+
+        for(MateriaTo mate : list){
+            Link materiaLink = linkTo(methodOn(MateriaControllerRestFul.class).encontrar(id)).withSelfRel();
+            mate.add(materiaLink);
+        }
         return list;
     }
 
